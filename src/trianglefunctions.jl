@@ -2,6 +2,21 @@
     taccum(x::Incremental)
 
 Returns an accumulated triangle out of an incremental triangle `x`.
+
+# Example
+```
+julia> ti = Incremental([3 5 2; 4 2 0; 1 0 0])
+Incremental Triangle {Int64}:
+ 3  5  2
+ 4  2  0
+ 1  0  0
+
+julia> taccum(ti)
+Accumulated Triangle {Int64}:
+ 3  8  10
+ 4  6   0
+ 1  0   0
+```
 """
 function taccum(x::Incremental)
     acum = cumsum(x.claims, dims=2)
@@ -20,6 +35,21 @@ end
     tdeacum(x::Accumulated)
 
 Returns an incremental triangle out of an accumulated triangle `x`.
+
+# Example
+```
+julia> ta = Accumulated([3 8 10; 4 6 0; 1 0 0])
+Accumulated Triangle {Int64}:
+ 3  8  10
+ 4  6   0
+ 1  0   0
+
+julia> tdeacum(ta)
+Incremental Triangle {Int64}:
+ 3  5  2
+ 4  2  0
+ 1  0  0
+```
 """
 function tdeacum(x::Accumulated)
     des = zeros(eltype(x.claims), size(x.claims, 1), size(x.claims, 1))
@@ -40,6 +70,17 @@ end
     incurred(x::Accumulated)
 
 Returns the diagonal of an accumulated triangle `x`.
+
+# Example
+```
+julia> ta = Accumulated([3 8 10; 4 6 0; 1 0 0]);
+
+julia> incurred(ta)
+3-element Vector{Any}:
+ 10
+  6
+  1
+```
 """
 function incurred(x::Accumulated)
     incurred = []
@@ -55,6 +96,18 @@ end
 
 Returns a `n`x`n` random matrix, whose values are randomly
 taken from the distribution `d`.
+
+# Example
+```
+julia> d = IbnrClaims.Distributions.Gamma(5,5)
+Distributions.Gamma{Float64}(α=5.0, θ=5.0)
+
+julia> randtri(3, d)
+3×3 Matrix{Float64}:
+ 18.162  19.348  29.123
+ 15.123  28.737   0.0
+ 18.066   0.0     0.0
+```
 """
 function randtri(n::Int, d)
     r = zeros(Float64, n, n)

@@ -3,6 +3,21 @@
 
 Returns a vector containing the incremental development factors of 
 the accumulated triangle built out of the incremental triangle `x`.
+
+# Example
+```
+julia> ti = Incremental([3 5 2; 4 2 0; 1 0 0])
+Incremental Triangle {Int64}:
+ 3  5  2
+ 4  2  0
+ 1  0  0
+
+julia> tfactors(ti)
+3-element Vector{Float64}:
+ 2.0
+ 1.25
+ 1.0
+```
 """
 function tfactors(x::Incremental)
     tmp = taccum(x)
@@ -18,6 +33,21 @@ end
     tfactors(x::Accumulated)
 
 Returns a vector containing the incremental development factors of the accumulated triangle `x`.
+
+# Example
+````
+julia> ta = Accumulated([3 8 10; 4 6 0; 1 0 0])
+Accumulated Triangle {Int64}:
+ 3  8  10
+ 4  6   0
+ 1  0   0
+
+julia> tfactors(ta)
+3-element Vector{Float64}:
+ 2.0
+ 1.25
+ 1.0
+```
 """
 function tfactors(x::Accumulated)
     tfactors = ones(Float64, size(x.claims)[2])
@@ -34,6 +64,21 @@ end
 Returns a completed accumulated triangle, which contains both the
 known accumulated claims of accumulated triangle `x` and the chain ladder 
 estimated accumulated claims.
+
+# Example
+```
+julia> ta = Accumulated([3 8 10; 4 6 0; 1 0 0])
+Accumulated Triangle {Int64}:
+ 3  8  10
+ 4  6   0
+ 1  0   0
+
+julia> fillcl(ta)
+Accumulated Completed Triangle {Float64}:
+ 3.0  8.0  10.0
+ 4.0  6.0   7.5
+ 1.0  2.0   2.5
+```
 """
 function fillcl(x::Accumulated)
     factores = tfactors(x)
@@ -55,6 +100,21 @@ end
 Returns a completed incremental triangle, which contains both the
 known incremental claims of incremental triangle `x` and the chain ladder
 estimated incremental claims.
+
+# Example
+```
+julia> ti = Incremental([3 5 2; 4 2 0; 1 0 0])
+Incremental Triangle {Int64}:
+ 3  5  2
+ 4  2  0
+ 1  0  0
+
+julia> fillcl(ti)
+Incremental Completed Triangle {Float64}:
+ 3.0  5.0  2.0
+ 4.0  2.0  1.5
+ 1.0  1.0  0.5
+```
 """
 function fillcl(x::Incremental)
     factores = tfactors(x)
@@ -83,6 +143,18 @@ end
 
 Returns the estimated incurred but not reported claim reserve for the
 accumulated triangle `x` using the chain ladder methodology.
+
+# Example
+```
+julia> ta = Accumulated([3 8 10; 4 6 0; 1 0 0])
+Accumulated Triangle {Int64}:
+ 3  8  10
+ 4  6   0
+ 1  0   0
+
+julia> ibnrcl(ta)
+3.0
+```
 """
 function ibnrcl(x::Accumulated)
     tri_completado = fillcl(x)
@@ -100,6 +172,18 @@ end
     
 Returns the estimated incurred but not reported claim reserve for the
 incremental triangle `x` using the chain ladder methodology.
+
+# Example
+```
+julia> ti = Incremental([3 5 2; 4 2 0; 1 0 0])
+Incremental Triangle {Int64}:
+ 3  5  2
+ 4  2  0
+ 1  0  0
+
+julia> ibnrcl(ti)
+3.0
+```
 """
 function ibnrcl(x::Incremental)
     y = taccum(x)
